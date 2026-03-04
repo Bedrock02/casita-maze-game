@@ -1,4 +1,5 @@
 import './App.css';
+import laCasitaFront from './assets/la-casita-front.png';
 
 type AppProps = {
   onStart: () => void;
@@ -8,7 +9,7 @@ function App({ onStart }: AppProps) {
   return (
     <div className="app">
       <h1>Buscando La Casita</h1>
-      <img className="casita-image" src="/la-casita-front.png" alt="La Casita" />
+      <img className="casita-image" src={laCasitaFront} alt="La Casita" />
     
       <button className="start-game-btn" type="button" onClick={onStart}>
         Start Game
