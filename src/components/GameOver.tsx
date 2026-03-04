@@ -33,21 +33,10 @@ export default function GameOver({
       <section className="game-over-card" aria-label="Game over results">
         <h1>Game Over</h1>
         <div className="game-over-scene">
-          <div className="scene-avatar avatar avatar-down walk-a" aria-hidden="true">
-            <div className="hat" />
-            <div className="glasses" />
-            <div className="face" />
-            <div className="sweater" />
-            <div className="legs">
-              <span className="leg left" />
-              <span className="leg right" />
-            </div>
-          </div>
-          <div className="scene-casita" aria-hidden="true">
-            <div className="roof" />
-            <div className="house" />
-            <div className="door" />
-          </div>
+          <img
+            src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExb25lZ2w4M2ZvM2w3eHR0bDJrbWluZ3k3MmI3ajAwMjNwejRheWhsYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6Sv8GYSOin1VV3s0Ve/giphy.gif"
+            alt="Bad Bunny in sugar cane field"
+          />
         </div>
 
         <div className="analytics-grid">

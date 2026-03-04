@@ -23,7 +23,7 @@ export default function GameHeader({
   return (
     <header className="hud">
       <div className="hud-title-row">
-        <h1>La Casita Maze</h1>
+        <h1>Buscando La Casita</h1>
         <button
           ref={tooltipRef}
           className={`controls-tooltip ${showControlsHelp ? 'is-open' : ''}`}
