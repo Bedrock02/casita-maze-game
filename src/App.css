@@ -79,6 +79,7 @@ body {
   transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  width: 50%;
 }
 
 .start-game-btn:hover {
@@ -404,7 +405,8 @@ body {
 .mobile-controls button,
 .share-actions button,
 .restart-btn,
-.share-actions a {
+.share-actions a,
+.end-game-btn {
   border: 1px solid var(--accent-gold-dim);
   border-radius: 10px;
   background: color-mix(in srgb, var(--panel-soft) 90%, transparent);
@@ -449,12 +451,9 @@ body {
 }
 
 .game-over-card {
-  width: min(780px, 94vw);
-  margin: 0 auto;
+  width: 25vw;
   padding: 1rem;
-  border: 1px solid var(--accent-gold-dim);
   border-radius: 14px;
-  background: color-mix(in srgb, var(--panel) 88%, transparent);
 }
 
 .game-over-card h1 {
@@ -463,16 +462,21 @@ body {
 }
 
 .game-over-scene {
-  margin-top: 0.75rem;
-  height: 200px;
-  border: 1px solid var(--accent-gold-dim);
-  border-radius: 12px;
+  height: 100vh;
   position: relative;
-  background: linear-gradient(
+  background-image: url('/src/assets/casita-end.png'), linear-gradient(
     180deg,
     color-mix(in srgb, var(--panel-soft) 92%, transparent),
     color-mix(in srgb, var(--panel) 95%, transparent)
   );
+  background-size: contain, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  flex-direction: column;
+  display: flex;
+  justify-content: end;
+  padding-bottom: 4rem;
+  align-items: center;
 }
 
 .scene-avatar {
@@ -554,10 +558,6 @@ body {
 
   .mobile-controls {
     display: grid;
-  }
-
-  .game-over-scene {
-    height: 170px;
   }
 
   .share-actions {

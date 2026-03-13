@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import App from './App';
 import Play from './play';
+import Instructions from './instructions';
 
 function Router() {
   const [pathname, setPathname] = useState(window.location.pathname);
@@ -23,7 +24,11 @@ function Router() {
     return <Play />;
   }
 
-  return <App onStart={() => navigate('/play')} />;
+  if (pathname === '/instructions') {
+    return <Instructions onStart={() => navigate('/play')} />;
+  }
+
+  return <App onStart={() => navigate('/instructions')} />;
 }
 
 export default Router;

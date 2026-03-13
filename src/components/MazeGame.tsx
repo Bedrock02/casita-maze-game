@@ -60,10 +60,8 @@ export default function MazeGame() {
       <MobileControls onMove={tryMove} />
 
       <button className="end-game-btn" type="button" onClick={() => setGameOver(true)}>
-        End Game
+        Terminar Juego
       </button>
-
-      <p className="hint">Reach the pink casita before the timer hits zero.</p>
     </main>
   );
 }
