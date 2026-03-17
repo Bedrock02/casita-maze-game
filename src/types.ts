@@ -21,3 +21,13 @@ export type TouchPoint = {
   x: number;
   y: number;
 };
+
+export type PickupPopupKind = 'time' | 'points';
+
+export type PickupPopup = {
+  id: number;
+  row: number;
+  col: number;
+  text: string;
+  kind: PickupPopupKind;
+};

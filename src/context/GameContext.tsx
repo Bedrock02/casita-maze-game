@@ -2,13 +2,20 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type TouchEvent,
   type ReactNode,
 } from 'react';
 import { DIRECTION_BY_KEY, MOVE_BY_DIRECTION } from '../constants';
-import { createMaze, getLevelCountdown, getResponsiveTileSize } from '../utils';
-import type { Direction, Maze, Position, TouchPoint } from '../types';
+import {
+  createMaze,
+  generatePlantainsAvoiding,
+  getHardestFlagPosition,
+  getLevelCountdown,
+  getResponsiveTileSize,
+} from '../utils';
+import type { Direction, Maze, PickupPopup, Position, TouchPoint } from '../types';
 
 export interface GameContextType {
   // Game state
@@ -25,6 +32,10 @@ export interface GameContextType {
   gameOver: boolean;
   completedRounds: number;
   bestElapsedTime: number | null;
+  score: number;
+  plantains: Position[];
+  flagPosition: Position | null;
+  popups: PickupPopup[];
 
   // Game actions
   tryMove: (direction: Direction) => void;
@@ -63,9 +74,26 @@ export function GameProvider({ children }: GameProviderProps) {
   const [gameOver, setGameOver] = useState(false);
   const [completedRounds, setCompletedRounds] = useState(0);
   const [bestElapsedTime, setBestElapsedTime] = useState<number | null>(null);
+  const [score, setScore] = useState(0);
+  const [flagPosition, setFlagPosition] = useState<Position | null>(() => getHardestFlagPosition(maze));
+  const [plantains, setPlantains] = useState<Position[]>(() =>
+    generatePlantainsAvoiding(maze, 1, flagPosition ? [flagPosition] : []),
+  );
+  const [popups, setPopups] = useState<PickupPopup[]>([]);
+  const popupIdRef = useRef(0);
 
   const rows = maze.tiles.length;
   const cols = maze.tiles[0].length;
+
+  const showPopup = (row: number, col: number, text: string, kind: PickupPopup['kind']) => {
+    const id = popupIdRef.current + 1;
+    popupIdRef.current = id;
+
+    setPopups((current) => [...current, { id, row, col, text, kind }]);
+    window.setTimeout(() => {
+      setPopups((current) => current.filter((popup) => popup.id !== id));
+    }, 900);
+  };
 
   const tryMove = (direction: Direction) => {
     if (gameOver) {
@@ -92,6 +120,34 @@ export function GameProvider({ children }: GameProviderProps) {
       }
 
       setStepFrame((frame) => (frame + 1) % 2);
+
+      setPlantains((currentPlantains) => {
+        const collectedIndex = currentPlantains.findIndex(
+          (plantain) => plantain.row === next.row && plantain.col === next.col,
+        );
+
+        if (collectedIndex === -1) {
+          return currentPlantains;
+        }
+
+        setScore((prevScore) => prevScore + 100);
+        showPopup(next.row, next.col, '+100 pts', 'points');
+        return currentPlantains.filter((_, index) => index !== collectedIndex);
+      });
+
+      setFlagPosition((currentFlagPosition) => {
+        if (!currentFlagPosition) {
+          return currentFlagPosition;
+        }
+
+        if (currentFlagPosition.row === next.row && currentFlagPosition.col === next.col) {
+          setTimeLeft((currentTimeLeft) => currentTimeLeft + 10);
+          showPopup(next.row, next.col, '+10s', 'time');
+          return null;
+        }
+
+        return currentFlagPosition;
+      });
 
       if (next.row === maze.exit.row && next.col === maze.exit.col) {
         const roundTime = elapsedSeconds;
@@ -143,7 +199,11 @@ export function GameProvider({ children }: GameProviderProps) {
     const timer = setTimeout(() => {
       setElapsedSeconds(0);
       setTimeLeft(getLevelCountdown(level));
-      setMaze(createMaze(level));
+      const nextMaze = createMaze(level);
+      const nextFlag = getHardestFlagPosition(nextMaze);
+      setMaze(nextMaze);
+      setFlagPosition(nextFlag);
+      setPlantains(generatePlantainsAvoiding(nextMaze, level, nextFlag ? [nextFlag] : []));
     }, 0);
     return () => clearTimeout(timer);
   }, [level, gameOver]);
@@ -251,8 +311,13 @@ export function GameProvider({ children }: GameProviderProps) {
     setPlayer(nextMaze.start);
     setCompletedRounds(0);
     setBestElapsedTime(null);
+    setScore(0);
+    const nextFlag = getHardestFlagPosition(nextMaze);
+    setFlagPosition(nextFlag);
+    setPlantains(generatePlantainsAvoiding(nextMaze, 1, nextFlag ? [nextFlag] : []));
     setFacing('down');
     setStepFrame(0);
+    setPopups([]);
   };
 
   const value: GameContextType = {
@@ -270,6 +335,10 @@ export function GameProvider({ children }: GameProviderProps) {
     gameOver,
     completedRounds,
     bestElapsedTime,
+    score,
+    plantains,
+    flagPosition,
+    popups,
 
     // Game actions
     tryMove,

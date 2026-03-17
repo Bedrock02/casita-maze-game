@@ -4,6 +4,7 @@ import { formatTime } from '../utils';
 interface GameHeaderProps {
   level: number;
   timeLeft: number;
+  score: number;
   showControlsHelp: boolean;
   setShowControlsHelp: (show: boolean | ((prev: boolean) => boolean)) => void;
 }
@@ -11,6 +12,7 @@ interface GameHeaderProps {
 export default function GameHeader({
   level,
   timeLeft,
+  score,
   showControlsHelp,
   setShowControlsHelp,
 }: GameHeaderProps) {
@@ -44,6 +46,10 @@ export default function GameHeader({
         <p>
           <span>Countdown</span>
           <strong className={countdownClass}>{formatTime(timeLeft)}</strong>
+        </p>
+        <p>
+          <span>Score</span>
+          <strong>{score}</strong>
         </p>
       </div>
     </header>

@@ -9,10 +9,14 @@ export default function MazeGame() {
     level,
     maze,
     player,
+    plantains,
+    flagPosition,
     facing,
     stepFrame,
     timeLeft,
+    score,
     tileSize,
+    popups,
     onTouchStart,
     onTouchEnd,
     showControlsHelp,
@@ -28,6 +32,7 @@ export default function MazeGame() {
     return (
       <GameOver
         completedRounds={completedRounds}
+        score={score}
         onRestart={restartGame}
       />
     );
@@ -38,6 +43,7 @@ export default function MazeGame() {
       <GameHeader
         level={level}
         timeLeft={timeLeft}
+        score={score}
         showControlsHelp={showControlsHelp}
         setShowControlsHelp={setShowControlsHelp}
       />
@@ -45,6 +51,9 @@ export default function MazeGame() {
       <MazeBoard
         maze={maze}
         player={player}
+        plantains={plantains}
+        flagPosition={flagPosition}
+        popups={popups}
         facing={facing}
         stepFrame={stepFrame}
         tileSize={tileSize}

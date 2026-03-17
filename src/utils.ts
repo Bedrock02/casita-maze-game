@@ -109,3 +109,122 @@ export function getLevelCountdown(level: number): number {
   const reductionPerLevel = 8;
   return Math.max(60, baseSeconds - (level - 1) * reductionPerLevel);
 }
+
+export function generatePlantains(maze: Maze, level: number): Position[] {
+  return generatePlantainsWithExclusions(maze, level, []);
+}
+
+function generatePlantainsWithExclusions(
+  maze: Maze,
+  level: number,
+  excludedPositions: Position[],
+): Position[] {
+  const excluded = new Set(excludedPositions.map((position) => `${position.row}-${position.col}`));
+  const candidates: Position[] = [];
+
+  for (let row = 0; row < maze.tiles.length; row += 1) {
+    for (let col = 0; col < maze.tiles[row].length; col += 1) {
+      const isWall = maze.tiles[row][col];
+      const isStart = row === maze.start.row && col === maze.start.col;
+      const isExit = row === maze.exit.row && col === maze.exit.col;
+
+      const isExcluded = excluded.has(`${row}-${col}`);
+      if (!isWall && !isStart && !isExit && !isExcluded) {
+        candidates.push({ row, col });
+      }
+    }
+  }
+
+  const shuffled = shuffle(candidates);
+  const desiredCount = Math.min(12, 4 + Math.floor(level * 0.6));
+  const count = Math.min(desiredCount, shuffled.length);
+
+  return shuffled.slice(0, count);
+}
+
+export function generatePlantainsAvoiding(
+  maze: Maze,
+  level: number,
+  excludedPositions: Position[],
+): Position[] {
+  return generatePlantainsWithExclusions(maze, level, excludedPositions);
+}
+
+export function getHardestFlagPosition(maze: Maze): Position | null {
+  const rows = maze.tiles.length;
+  const cols = maze.tiles[0].length;
+  const visited = new Set<string>();
+  const queue: Array<{ row: number; col: number; distance: number }> = [
+    { row: maze.start.row, col: maze.start.col, distance: 0 },
+  ];
+
+  let best: { row: number; col: number; distance: number; openNeighbors: number } | null = null;
+  const directions = [
+    { dr: -1, dc: 0 },
+    { dr: 1, dc: 0 },
+    { dr: 0, dc: -1 },
+    { dr: 0, dc: 1 },
+  ];
+
+  const countOpenNeighbors = (row: number, col: number): number =>
+    directions.reduce((count, { dr, dc }) => {
+      const nextRow = row + dr;
+      const nextCol = col + dc;
+      if (
+        nextRow < 0 ||
+        nextCol < 0 ||
+        nextRow >= rows ||
+        nextCol >= cols ||
+        maze.tiles[nextRow][nextCol]
+      ) {
+        return count;
+      }
+      return count + 1;
+    }, 0);
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (!current) {
+      break;
+    }
+
+    const key = `${current.row}-${current.col}`;
+    if (visited.has(key)) {
+      continue;
+    }
+    visited.add(key);
+
+    const isStart = current.row === maze.start.row && current.col === maze.start.col;
+    const isExit = current.row === maze.exit.row && current.col === maze.exit.col;
+
+    if (!isStart && !isExit) {
+      const openNeighbors = countOpenNeighbors(current.row, current.col);
+      const isBetter =
+        !best ||
+        current.distance > best.distance ||
+        (current.distance === best.distance && openNeighbors < best.openNeighbors);
+
+      if (isBetter) {
+        best = { ...current, openNeighbors };
+      }
+    }
+
+    for (const { dr, dc } of directions) {
+      const nextRow = current.row + dr;
+      const nextCol = current.col + dc;
+      if (
+        nextRow < 0 ||
+        nextCol < 0 ||
+        nextRow >= rows ||
+        nextCol >= cols ||
+        maze.tiles[nextRow][nextCol]
+      ) {
+        continue;
+      }
+
+      queue.push({ row: nextRow, col: nextCol, distance: current.distance + 1 });
+    }
+  }
+
+  return best ? { row: best.row, col: best.col } : null;
+}

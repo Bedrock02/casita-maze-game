@@ -1,10 +1,12 @@
 interface GameOverProps {
   completedRounds: number;
+  score: number;
   onRestart: () => void;
 }
 
 export default function GameOver({
   completedRounds,
+  score,
   onRestart,
 }: GameOverProps) {
 
@@ -37,6 +39,9 @@ export default function GameOver({
               </div>
               <div className="motivational-subtitle">
                 ¿Puedes superar tu récord?
+              </div>
+              <div className="motivational-subtitle">
+                Puntuacion final: <strong>{score}</strong>
               </div>
               <div>
                 <button className="restart-btn" type="button" onClick={onRestart}>

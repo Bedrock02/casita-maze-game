@@ -241,6 +241,75 @@ body {
     linear-gradient(180deg, #2f739f, #225b84);
 }
 
+.plantain {
+  position: absolute;
+  width: 160%;
+  height: 160%;
+  left: -30%;
+  top: -30%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(135, 240, 93, 0.55));
+  pointer-events: none;
+}
+
+.puerto-flag {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--tile-size) * 0.9);
+  line-height: 1;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  animation: flagPulse 1.2s ease-in-out infinite alternate;
+}
+
+.pickup-popup {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-size: calc(var(--tile-size) * 0.5);
+  font-weight: 800;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 4;
+  animation: pickupFloatUp 900ms ease-out forwards;
+}
+
+.pickup-popup-points {
+  color: #ffe58a;
+}
+
+.pickup-popup-time {
+  color: #8ff6ff;
+}
+
+@keyframes flagPulse {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes pickupFloatUp {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -10%);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -35%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -115%);
+  }
+}
+
 .casita,
 .scene-casita {
   position: absolute;
