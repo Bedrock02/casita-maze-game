@@ -11,7 +11,6 @@ export default function MazeGame() {
     player,
     facing,
     stepFrame,
-    elapsedSeconds,
     timeLeft,
     tileSize,
     onTouchStart,
@@ -20,7 +19,6 @@ export default function MazeGame() {
     setShowControlsHelp,
     gameOver,
     completedRounds,
-    bestElapsedTime,
     tryMove,
     setGameOver,
     restartGame,
@@ -30,8 +28,6 @@ export default function MazeGame() {
     return (
       <GameOver
         completedRounds={completedRounds}
-        bestElapsedTime={bestElapsedTime}
-        level={level}
         onRestart={restartGame}
       />
     );
@@ -41,7 +37,6 @@ export default function MazeGame() {
     <main className="app-shell">
       <GameHeader
         level={level}
-        elapsedSeconds={elapsedSeconds}
         timeLeft={timeLeft}
         showControlsHelp={showControlsHelp}
         setShowControlsHelp={setShowControlsHelp}
